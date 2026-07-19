@@ -151,7 +151,9 @@ function getLeagueCredentials() {
         const lockfile = readFileSync(
           join(dirname(client.ExecutablePath), "lockfile"),
           "utf8",
-        ).trim().split(":");
+        )
+          .trim()
+          .split(":");
         if (lockfile.length >= 5 && /^\d+$/.test(lockfile[2])) {
           return resolve({ port: lockfile[2], token: lockfile[3] });
         }
@@ -317,8 +319,7 @@ async function start() {
       (skin) =>
         skin.searchNames?.some((name) =>
           name.toLowerCase().includes(searchInput.toLowerCase()),
-        ) ||
-        skin.id.toString() === searchInput.trim(),
+        ) || skin.id.toString() === searchInput.trim(),
     );
 
     if (matches.length === 0) {
@@ -345,6 +346,22 @@ async function start() {
       console.log(`\n⏳ Ставим фон: ${targetSkin.name}...`);
 
       try {
+        let finalId = targetSkin.id;
+
+        // Перехватываем только те ID, у которых нет статичных сплешей (Signature и скрытые версии)
+        if (
+          finalId === 103061 ||
+          finalId === 103062 ||
+          finalId === 103063 ||
+          finalId === 103087
+        ) {
+          // Подменяем на Immortalized Legend Ahri (красно-золотой сплеш Фейкера)
+          console.log(
+            `[DEBUG] Подмена Signature-версии на рабочую Immortalized Ари (103086)`,
+          );
+          finalId = 103086;
+        }
+
         const response = await fetch(
           `https://127.0.0.1:${credentials.port}/lol-summoner/v1/current-summoner/summoner-profile`,
           {
@@ -352,7 +369,7 @@ async function start() {
             headers,
             body: JSON.stringify({
               key: "backgroundSkinId",
-              value: targetSkin.id,
+              value: finalId,
             }),
           },
         );
@@ -360,7 +377,7 @@ async function start() {
         if (response.ok) {
           console.log(
             `\x1b[32m%s\x1b[0m`,
-            `✅ Успешно изменен на: ${targetSkin.name}!`,
+            `✅ Успешно изменен на: ${targetSkin.name} (ID: ${finalId})!`,
           );
           console.log("Переоткрой профиль в игре для обновления.\n");
         } else {
