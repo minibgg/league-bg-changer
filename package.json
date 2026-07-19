@@ -1,0 +1,26 @@
+{
+  "name": "league-bg-changer",
+  "version": "1.0.0",
+  "description": "A lightweight CLI tool to change your League of Legends profile background to any skin using the LCU API.",
+  "main": "index.js",
+  "bin": {
+    "league-bg": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "build:win": "node scripts/build-windows.js"
+  },
+  "keywords": [
+    "league-of-legends",
+    "lol",
+    "lcu",
+    "background",
+    "riot-games",
+    "summoner-profile"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "postject": "^1.0.0-alpha.6"
+  }
+}
